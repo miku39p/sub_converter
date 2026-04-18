@@ -2918,7 +2918,7 @@ var src_default = {
   async fetch(request, env) {
     const url = new URL(request.url);
     const host = url.origin;
-    const frontendUrl = 'https://raw.githubusercontent.com/bulianglin/psub/main/frontend.html';
+    const frontendUrl = 'https://raw.githubusercontent.com/miku39p/sub_converter/refs/heads/master/frontend.html';
     const SUB_BUCKET = env.SUB_BUCKET;
     let backend = env.BACKEND.replace(/(https?:\/\/[^/]+).*$/, "$1");
     const subDir = "subscription";
@@ -2928,9 +2928,7 @@ var src_default = {
       if (response.status !== 200) {
         return new Response('Failed to fetch frontend', { status: response.status });
       }
-      const originalHtml = await response.text();
-      const modifiedHtml = originalHtml.replace(/https:\/\/bulianglin2023\.dev/, host);
-      return new Response(modifiedHtml, {
+      return new Response(await response.text(), {
         status: 200,
         headers: {
           'Content-Type': 'text/html',
