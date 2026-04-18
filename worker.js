@@ -3039,7 +3039,15 @@ var src_default = {
     }
     const newUrl = replacedURIs.join("|");
     url.searchParams.set("url", newUrl);
+
+    console.log("\n==========================================");
+    console.log("🔒 [隐私保护] 已生成随机替换节点并暂存！");
+    console.log("🔍 [隐私清单] 原信息与假信息的对应关系：\n", JSON.stringify(replacements, null, 2));
+    
     const modifiedRequest = new Request(backend + url.pathname + url.search, request);
+    console.log("🚀 [请求后端] 正在将假节点发给真实转换后端：", modifiedRequest.url);
+    console.log("==========================================\n");
+
     const rpResponse = await fetch(modifiedRequest);
     for (const key of keys) {
       await SUB_BUCKET.delete(key);
@@ -3058,10 +3066,35 @@ var src_default = {
         const replacedBase64Data = btoa(newLinks.join("\r\n"));
         return new Response(replacedBase64Data, rpResponse);
       } catch (base64Error) {
-        const result = plaintextData.replace(
+        let result = plaintextData.replace(
           new RegExp(Object.keys(replacements).join("|"), "g"),
           (match) => replacements[match] || match
         );
+
+        // --- 开始：强行注入自定义 YAML 配置 ---
+        const target = url.searchParams.get("target");
+        const isClash = (target && target.includes("clash")) || result.includes("proxies:");
+        
+        if (isClash) {
+          try {
+            console.log("🛠️ [配置注入] 检测到 Clash 订阅，正在强行注入自定义 YAML...");
+            // 从你的 GitHub 动态拉取你刚才写的配置
+            const dnsUrl = "https://raw.githubusercontent.com/miku39p/sub_converter/refs/heads/master/clash_dns.yaml";
+            const dnsResponse = await fetch(dnsUrl);
+            if (dnsResponse.ok) {
+              const dnsYaml = await dnsResponse.text();
+              // 直接拼接到配置文件的最末尾
+              result = result + "\n\n" + dnsYaml;
+              console.log("✅ [配置注入] 注入成功！");
+            } else {
+              console.log("❌ [配置注入] 拉取自定义 YAML 失败");
+            }
+          } catch (e) {
+            console.log("❌ [配置注入] 注入过程发生错误", e);
+          }
+        }
+        // --- 结束：强行注入自定义 YAML 配置 ---
+
         return new Response(result, rpResponse);
       }
     }
@@ -3069,22 +3102,39 @@ var src_default = {
   }
 };
 function replaceInUri(link, replacements, isRecovery) {
+  let result;
   switch (true) {
     case link.startsWith("ss://"):
-      return replaceSS(link, replacements, isRecovery);
+      result = replaceSS(link, replacements, isRecovery);
+      break;
     case link.startsWith("ssr://"):
-      return replaceSSR(link, replacements, isRecovery);
+      result = replaceSSR(link, replacements, isRecovery);
+      break;
     case link.startsWith("vmess://"):
     case link.startsWith("vmess1://"):
-      return replaceVmess(link, replacements, isRecovery);
+      result = replaceVmess(link, replacements, isRecovery);
+      break;
     case link.startsWith("trojan://"):
     case link.startsWith("vless://"):
-      return replaceTrojan(link, replacements, isRecovery);
+      result = replaceTrojan(link, replacements, isRecovery);
+      break;
     case link.startsWith("hysteria://"):
-      return replaceHysteria(link, replacements);
+      result = replaceHysteria(link, replacements);
+      break;
     default:
       return;
   }
+  
+  if (result && result !== link) {
+    if (!isRecovery) {
+      console.log(`\n✂️ [脱敏前] 原始: ${link.substring(0, 80)}...`);
+      console.log(`✨ [脱敏后] 替换: ${result.substring(0, 80)}...`);
+    } else {
+      console.log(`\n🔄 [还原前] 假节点: ${link.substring(0, 80)}...`);
+      console.log(`✅ [还原后] 真节点: ${result.substring(0, 80)}...`);
+    }
+  }
+  return result;
 }
 function replaceSSR(link, replacements, isRecovery) {
   link = link.slice("ssr://".length).replace("\r", "").split("#")[0];
