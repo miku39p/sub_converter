@@ -3,8 +3,16 @@ main = "worker.js"
 compatibility_date = "2024-04-18"
 
 # --- 线上部署配置（默认） ---
-# 这里不写任何 vars 和 kv_namespaces
-# 这样每次部署时，Cloudflare 就会乖乖去读取你在网页后台设置的值，绝不会被覆盖！
+# 注意：Cloudflare 每次部署会强制以这个文件为准！
+# 如果这里不写，它就会把你在网页后台设置的变量全删掉。所以必须写在这里。
+[vars]
+BACKEND = "https://api.wcc.best"
+
+[[kv_namespaces]]
+binding = "SUB_BUCKET"
+# 【重要】请把你真实的 KV ID 填在这里，否则下次部署又会报错说找不到 KV！
+# 真实的 KV ID 是你在 Cloudflare 后台创建的 sub_kv 的 ID（一串32位的字母数字）
+id = "请替换为真实的KV_ID"
 
 # --- 本地测试配置（dev 环境） ---
 [env.dev.vars]
