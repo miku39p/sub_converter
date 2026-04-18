@@ -1,4 +1,4 @@
-name = "sub-converter-worker"
+name = "sub-converter"
 main = "worker.js"
 compatibility_date = "2024-04-18"
 
