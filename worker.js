@@ -2949,6 +2949,23 @@ var src_default = {
         const headers = object_headers ? new Headers(JSON.parse(object_headers)) : new Headers({ "Content-Type": "text/plain;charset=UTF-8" });
         return new Response(object, { headers });
       }
+    } else if (pathSegments[0] === 's' && pathSegments.length > 1) {
+      const shortKey = pathSegments[1];
+      const object = await SUB_BUCKET.get('s_' + shortKey);
+      if (object === null) return new Response("Short link not found", { status: 404 });
+      const longUrl = typeof object.text === 'function' ? await object.text() : object;
+      return Response.redirect(longUrl, 302);
+    } else if (pathSegments[0] === 'shorten' && request.method === 'POST') {
+      const { url: longUrl } = await request.json();
+      if (!longUrl) return new Response("Missing URL", { status: 400 });
+      const shortKey = Math.random().toString(36).substring(2, 8);
+      await SUB_BUCKET.put('s_' + shortKey, longUrl);
+      return new Response(JSON.stringify({ shortUrl: `${host}/s/${shortKey}` }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
     }
 
     const urlParam = url.searchParams.get("url");
