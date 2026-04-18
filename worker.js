@@ -2920,7 +2920,7 @@ var src_default = {
     const host = url.origin;
     const frontendUrl = 'https://raw.githubusercontent.com/miku39p/sub_converter/refs/heads/master/frontend.html';
     const SUB_BUCKET = env.SUB_BUCKET;
-    let backend = env.BACKEND.replace(/(https?:\/\/[^/]+).*$/, "$1");
+    let backend = (env.BACKEND || "https://sub.39projects.com").replace(/(https?:\/\/[^/]+).*$/, "$1");
     const subDir = "subscription";
     const pathSegments = url.pathname.split("/").filter((segment) => segment.length > 0);
     if (pathSegments.length === 0) {
