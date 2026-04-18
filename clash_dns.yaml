@@ -20,26 +20,12 @@ dns:
   nameserver:
     - 1.1.1.1
   nameserver-policy:
-    geosite:cn:
-      - 119.29.29.29
-      - 223.5.5.5
-    geosite:geolocation-!cn:
-      - tls://1.0.0.1:853
-      - tls://dns.google:853
+    - 1.1.1.1
   proxy-server-nameserver:
     - 1.1.1.1
   fallback:
     - 8.8.8.8
     - 1.1.1.1
-    - tls://1.0.0.1:853
-    - tls://dns.google:853
-  fallback-filter:
-    geoip: true
-    geoip-code: CN
-    geosite:
-      - gfw
-    ipcidr:
-      - 240.0.0.0/4
 
 ipv6: false
 geodata-loader: standard
