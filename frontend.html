@@ -221,7 +221,7 @@
 
         <div class="form-group">
             <label>生成类型</label>
-            <select id="target">
+            <select id="target" onchange="handleTargetChange()">
                 <option value="clash">Clash</option>
                 <option value="v2ray">V2Ray</option>
                 <option value="surge">Surge</option>
@@ -229,6 +229,11 @@
                 <option value="shadowsocks">Shadowsocks</option>
                 <option value="singbox">Sing-box</option>
             </select>
+        </div>
+
+        <div class="form-group" id="appendYamlGroup">
+            <label>额外注入 YAML 配置 URL (仅 Clash 有效，可选)</label>
+            <input id="appendYaml" type="text" placeholder="https://raw.../dns.yaml">
         </div>
 
         <div class="form-group">
@@ -372,6 +377,21 @@
         // 自动获取当前部署的 Worker 域名作为后端地址
         const BACKEND_URL = window.location.origin;
 
+        function handleTargetChange() {
+            const target = document.getElementById('target').value;
+            const appendYamlGroup = document.getElementById('appendYamlGroup');
+            if (target === 'clash') {
+                appendYamlGroup.style.display = 'block';
+            } else {
+                appendYamlGroup.style.display = 'none';
+            }
+        }
+        
+        // 初始化显示状态
+        document.addEventListener('DOMContentLoaded', () => {
+            handleTargetChange();
+        });
+
         function generate() {
             const links = document.getElementById('links').value.trim().split('\n').filter(l => l.trim());
             const target = document.getElementById('target').value;
@@ -387,12 +407,15 @@
             }
 
             const filename = document.getElementById('filename').value.trim();
+            
+            const appendYaml = document.getElementById('appendYaml').value.trim();
+            const appendYamlParam = (target === 'clash' && appendYaml) ? `&append_yaml=${encodeURIComponent(appendYaml)}` : '';
 
             // 固定参数
             const fixedParams = 'tls13=true&emoji=true&list=false&xudp=true&udp=true&tfo=false&expand=true&scv=false&fdn=false&new_name=true&diyua=ShadowRocket';
 
             // 按照用户要求的格式生成：后端 + /sub?target=...&url=...&config=...&固定参数&filename=...
-            const longUrl = `${BACKEND_URL}/sub?target=${target}&url=${encodeURIComponent(links.join('|'))}${config ? '&config=' + encodeURIComponent(config) : ''}&${fixedParams}${filename ? '&filename=' + encodeURIComponent(filename) : ''}`;
+            const longUrl = `${BACKEND_URL}/sub?target=${target}&url=${encodeURIComponent(links.join('|'))}${config ? '&config=' + encodeURIComponent(config) : ''}&${fixedParams}${filename ? '&filename=' + encodeURIComponent(filename) : ''}${appendYamlParam}`;
             
             const resultUrl = document.getElementById('resultUrl');
             resultUrl.value = longUrl;

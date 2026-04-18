@@ -3073,14 +3073,13 @@ var src_default = {
 
         // --- 开始：强行注入自定义 YAML 配置 ---
         const target = url.searchParams.get("target");
+        const appendYamlUrl = url.searchParams.get("append_yaml");
         const isClash = (target && target.includes("clash")) || result.includes("proxies:");
         
-        if (isClash) {
+        if (isClash && appendYamlUrl) {
           try {
-            console.log("🛠️ [配置注入] 检测到 Clash 订阅，正在强行注入自定义 YAML...");
-            // 从你的 GitHub 动态拉取你刚才写的配置
-            const dnsUrl = "https://raw.githubusercontent.com/miku39p/sub_converter/refs/heads/master/clash_dns.yaml";
-            const dnsResponse = await fetch(dnsUrl);
+            console.log(`🛠️ [配置注入] 检测到 Clash 订阅并提供了注入 URL: ${appendYamlUrl}`);
+            const dnsResponse = await fetch(appendYamlUrl);
             if (dnsResponse.ok) {
               const dnsYaml = await dnsResponse.text();
               // 直接拼接到配置文件的最末尾
