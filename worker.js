@@ -2957,7 +2957,7 @@ var src_default = {
       const { url: longUrl } = await request.json();
       if (!longUrl) return new Response("Missing URL", { status: 400 });
       const shortKey = Math.random().toString(36).substring(2, 8);
-      await SUB_BUCKET.put('s_' + shortKey, longUrl);
+      await SUB_BUCKET.put('s_' + shortKey, longUrl, { expirationTtl: 1200 }); // 1200秒 = 20分钟
       return new Response(JSON.stringify({ shortUrl: `${host}/s/${shortKey}` }), {
         headers: {
           'Content-Type': 'application/json',
