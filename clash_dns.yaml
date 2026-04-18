@@ -16,11 +16,9 @@ dns:
     - "*.msftncsi.com"
     - www.msftconnecttest.com
   default-nameserver:
-    - 119.29.29.29
-    - 223.5.5.5
+    - 1.1.1.1
   nameserver:
-    - 119.29.29.29
-    - 223.5.5.5
+    - 1.1.1.1
   nameserver-policy:
     geosite:cn:
       - 119.29.29.29
@@ -29,8 +27,7 @@ dns:
       - tls://1.0.0.1:853
       - tls://dns.google:853
   proxy-server-nameserver:
-    - 119.29.29.29
-    - 223.5.5.5
+    - 1.1.1.1
   fallback:
     - 8.8.8.8
     - 1.1.1.1
@@ -43,3 +40,56 @@ dns:
       - gfw
     ipcidr:
       - 240.0.0.0/4
+
+ipv6: false
+geodata-loader: standard
+tcp-concurrent: true
+unified-delay: true
+geox-url:
+  mmdb: https://testingcf.jsdelivr.net/gh/alecthw/mmdb_china_ip_list@release/lite/Country.mmdb
+  geoip: https://testingcf.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat
+  geosite: https://testingcf.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat
+  asn: https://testingcf.jsdelivr.net/gh/xishang0128/geoip@release/GeoLite2-ASN.mmdb
+sniffer:
+  enable: true
+  override-destination: true
+  sniff:
+    QUIC:
+      ports:
+      - 443
+    TLS:
+      ports:
+      - 443
+      - 8443
+    HTTP:
+      ports:
+      - 80
+      - 8080-8880
+      override-destination: true
+  force-domain:
+  - "+.netflix.com"
+  - "+.nflxvideo.net"
+  - "+.amazonaws.com"
+  - "+.media.dssott.com"
+  skip-domain:
+  - Mijia Cloud
+  - dlg.io.mi.com
+  - "+.oray.com"
+  - "+.sunlogin.net"
+  - "+.push.apple.com"
+  parse-pure-ip: true
+tun:
+  enable: true
+  stack: system
+  device: utun
+  dns-hijack:
+  - 127.0.0.1:53
+  endpoint-independent-nat: true
+  auto-route: false
+  auto-detect-interface: false
+  auto-redirect: false
+  strict-route: false
+  disable-icmp-forwarding: false
+profile:
+  store-selected: true
+  store-fake-ip: true
