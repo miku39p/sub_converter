@@ -1,0 +1,13 @@
+name = "sub-converter-worker"
+main = "worker.js"
+compatibility_date = "2024-04-18"
+
+# 这里设置你的环境变量，在本地测试和推送到线上时都会生效
+[vars]
+BACKEND = "https://sub.39projects.com"
+
+# 绑定 KV 存储空间
+[[kv_namespaces]]
+binding = "SUB_BUCKET"
+id = "1234567890abcdef1234567890abcdef" # 线上真实的 KV ID（如果你要使用 wrangler publish）
+preview_id = "test-local-kv" # 本地测试时使用的虚拟 KV ID
