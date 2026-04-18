@@ -446,7 +446,7 @@
                 
                 const data = await res.json();
                 document.getElementById('resultUrl').value = data.shortUrl;
-                alert('短链接已生成！');
+                alert('短链接已生成！（注：短链接有效期为 20 分钟，到期后将自动删除）');
                 shortBtn.style.display = 'none';
             } catch (e) {
                 console.error(e);

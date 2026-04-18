@@ -12,7 +12,7 @@ BACKEND = "https://api.wcc.best"
 binding = "SUB_BUCKET"
 # 【重要】请把你真实的 KV ID 填在这里，否则下次部署又会报错说找不到 KV！
 # 真实的 KV ID 是你在 Cloudflare 后台创建的 sub_kv 的 ID（一串32位的字母数字）
-id = "请替换为真实的KV_ID"
+id = "99955bae03344d52b94a823a54fcee43"
 
 # --- 本地测试配置（dev 环境） ---
 [env.dev.vars]
