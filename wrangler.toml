@@ -6,7 +6,7 @@ compatibility_date = "2024-04-18"
 # 注意：Cloudflare 每次部署会强制以这个文件为准！
 # 如果这里不写，它就会把你在网页后台设置的变量全删掉。所以必须写在这里。
 [vars]
-BACKEND = "https://api.wcc.best"
+BACKEND = "https://api.asailor.org"
 
 [[kv_namespaces]]
 binding = "SUB_BUCKET"
@@ -16,7 +16,7 @@ id = "99955bae03344d52b94a823a54fcee43"
 
 # --- 本地测试配置（dev 环境） ---
 [env.dev.vars]
-BACKEND = "https://api.wcc.best"
+BACKEND = "https://api.asailor.org"
 
 [[env.dev.kv_namespaces]]
 binding = "SUB_BUCKET"

@@ -17,14 +17,17 @@ dns:
     - www.msftconnecttest.com
   default-nameserver:
     - 1.1.1.1
+    - 8.8.4.4
+
   nameserver:
-    - 1.1.1.1
+    - "tls://dns.quad9.net#RULES"
+
   nameserver-policy:
-    - 1.1.1.1
+    "geosite:cn":
+      - 223.5.5.5
+
   proxy-server-nameserver:
-    - 1.1.1.1
-  fallback:
-    - 8.8.8.8
+    - 8.8.4.4
     - 1.1.1.1
 
 ipv6: false
